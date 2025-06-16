@@ -31,7 +31,6 @@
       border-radius: 20px;
       overflow: hidden;
       padding-right: 17px;
-      margin-right: 400px;
       margin: auto;
     }
 
@@ -63,18 +62,30 @@
     }
 
     .features li::before {
-      content: url('icon-list.svg');
+      content: url('assets/images/icon-list.svg');
       margin-right: 10px;
+    }
+
+    .form-group {
+      position: relative;
     }
 
     .form-group label {
       font-weight: bold;
       margin-bottom: 5px;
-      display: block;
+      display: flex;
+      align-items: center;
+    }
+
+    .error-message {
+      color: hsl(4, 100%, 67%);
+      font-size: 0.9rem;
+      margin-left: 121px;
+      display: none;
     }
 
     .form-group input {
-      width: calc(100% + 70px); 
+      width: calc(100% + 70px);
       padding: 15px;
       border: 1px solid hsl(231, 7%, 60%);
       border-radius: 5px;
@@ -88,12 +99,13 @@
       box-shadow: 0 0 5px hsl(234, 29%, 20%);
     }
 
-    .form-group input:invalid {
+    .form-group input.invalid {
       border-color: hsl(4, 100%, 67%);
+      background-color: hsl(4, 100%, 95%);
     }
 
     .subscribe-btn {
-      width: calc(100% + 70px); 
+      width: calc(100% + 70px);
       padding: 15px;
       background-color: hsl(234, 29%, 20%);
       color: white;
@@ -120,12 +132,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-       border-radius: 15px;
+      border-radius: 15px;
     }
 
     .ill img {
-      max-height: 470px; 
-      width: auto; 
+      max-height: 470px;
+      width: auto;
       border-radius: 15px;
     }
 
@@ -182,30 +194,30 @@
       .container {
         flex-direction: column-reverse;
         max-width: 100%;
-        margin-right: 0; 
+        margin-right: 0;
       }
 
       .image-section {
         min-height: 200px;
-        background: url('icon-list.svg') no-repeat center;
+        background: url('assets/images/icon-list.svg') no-repeat center;
         background-size: cover;
       }
 
       .form-section {
         padding: 20px;
-        margin-right: 0; 
+        margin-right: 0;
       }
 
       .form-group input {
-        width: 100%; 
+        width: 100%;
       }
 
       .subscribe-btn {
-        width: 100%; 
+        width: 100%;
       }
 
       .ill img {
-        max-height: 150px; 
+        max-height: 150px;
       }
     }
   </style>
@@ -221,36 +233,53 @@
         <li>And much more!</li>
       </ul>
       <div class="form-group">
-        <label for="email">Email address</label><br>
-        <input type="email" id="email" name="email" placeholder="email@company.com" required="">
+        <label for="email">Email address <span id="errorMessage" class="error-message">Valid email required</span></label>
+        <input type="email" id="email" name="email" placeholder="email@company.com" required>
       </div>
       <button class="subscribe-btn">Subscribe to monthly newsletter</button>
     </div>
     <div class="ill">
-      <img src="illustration-sign-up-desktop.svg">
+      <img src="assets/images/illustration-sign-up-desktop.svg">
     </div>
   </div>
   <div class="success-message" id="successMessage">
-    <img src="icon-list.svg" alt="Checkmark Icon">
+    <img src="assets/images/icon-success.svg" alt="Checkmark Icon">
     <h1>Thanks for subscribing!</h1>
-    <p>A confirmation email has been sent to <span id="submittedEmail"></span>. Please open it and click the button inside to confirm your subscription.</p>
+    <p>A confirmation email has been sent to <b><span id="submittedEmail"></span></b>. Please open it and click the button inside to confirm your subscription.</p>
     <button class="dismiss-btn">Dismiss message</button>
   </div>
 
   <script>
-    document.querySelector('.subscribe-btn').addEventListener('click', function() {
-      const email = document.getElementById('email').value;
-      if (email && document.getElementById('email').checkValidity()) {
-        document.getElementById('submittedEmail').textContent = email;
-        document.getElementById('signUpForm').style.display = 'none';
-        document.getElementById('successMessage').style.display = 'block';
+    const subscribeBtn = document.querySelector('.subscribe-btn');
+    const emailInput = document.getElementById('email');
+    const errorMessage = document.getElementById('errorMessage');
+    const submittedEmail = document.getElementById('submittedEmail');
+    const signUpForm = document.getElementById('signUpForm');
+    const successMessage = document.getElementById('successMessage');
+
+    subscribeBtn.addEventListener('click', function(e) {
+      e.preventDefault(); 
+      
+      const email = emailInput.value.trim();
+      
+      if (!email || !emailInput.checkValidity()) {
+        errorMessage.style.display = 'inline';
+        emailInput.classList.add('invalid');
+      } else {
+        errorMessage.style.display = 'none';
+        emailInput.classList.remove('invalid');
+        submittedEmail.textContent = email;
+        signUpForm.style.display = 'none';
+        successMessage.style.display = 'block';
       }
     });
 
     document.querySelector('.dismiss-btn').addEventListener('click', function() {
-      document.getElementById('successMessage').style.display = 'none';
-      document.getElementById('signUpForm').style.display = 'flex';
-      document.getElementById('email').value = '';
+      successMessage.style.display = 'none';
+      signUpForm.style.display = 'flex';
+      emailInput.value = '';
+      errorMessage.style.display = 'none';
+      emailInput.classList.remove('invalid');
     });
   </script>
 </body>
